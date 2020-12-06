@@ -99,19 +99,19 @@ class Rouge:
     AVAILABLE_METRICS = {
         "rouge-1": lambda hyp, ref, **k: rouge_score.rouge_n(hyp, ref, 1, **k),
         "rouge-2": lambda hyp, ref, **k: rouge_score.rouge_n(hyp, ref, 2, **k),
-        "rouge-l": lambda hyp, ref, **k:
-            rouge_score.rouge_l_summary_level(hyp, ref, **k),
+        "rouge-l": lambda hyp, ref, **k: rouge_score.rouge_l_summary_level(hyp, ref, **k),
     }
     DEFAULT_STATS = ["f", "p", "r"]
     AVAILABLE_STATS = ["f", "p", "r"]
 
     def __init__(self, metrics=None, stats=None, return_lengths=False,
-                 raw_results=False, exclusive=False, CHINESE=True):
+                 raw_results=False, exclusive=False, isChinese=True):
         self.return_lengths = return_lengths
         self.raw_results = raw_results
         self.exclusive = exclusive
+        self.word_split = " "
 
-        if CHINESE:
+        if isChinese:
             self.sentence_split = '。'
             self.word_split = ""
         else:
@@ -162,10 +162,12 @@ class Rouge:
         scores = []
         for hyp, ref in zip(hyps, refs):
             sen_score = {}
-            # hyp = [word_split.join(_.split()) for _ in hyp.split(sentence_split) if len(_) > 0]
-            # ref = [word_split.join(_.split()) for _ in ref.split(sentence_split) if len(_) > 0]
-            hyp = [hyp]
-            ref = [ref]
+            if self.word_split:
+                hyp = hyp.split(sep=self.word_split)
+                ref = ref.split(sep=self.word_split)
+            else:
+                hyp = [hyp]
+                ref = [ref]
 
             for m in self.metrics:
                 fn = Rouge.AVAILABLE_METRICS[m]
@@ -173,7 +175,9 @@ class Rouge:
                     hyp,
                     ref,
                     raw_results=self.raw_results,
-                    exclusive=self.exclusive)
+                    exclusive=self.exclusive,
+                    wordsplit=self.word_split
+                )
                 sen_score[m] = {s: sc[s] for s in self.stats}
 
             if self.return_lengths:
@@ -192,14 +196,13 @@ class Rouge:
 
         count = 0
         for (hyp, ref) in zip(hyps, refs):
-            # hyp = [word_split.join(_.split()) for _ in hyp.split(sentence_split) if len(_) > 0]
-            # ref = [word_split.join(_.split()) for _ in ref.split(sentence_split) if len(_) > 0]
-            hyp = [hyp]
-            ref = [ref]
+            hyp = hyp.split(sep=self.sentence_split)
+            ref = ref.split(sep=self.sentence_split)
+
 
             for m in self.metrics:
                 fn = Rouge.AVAILABLE_METRICS[m]
-                sc = fn(hyp, ref, exclusive=self.exclusive)
+                sc = fn(hyp, ref, exclusive=self.exclusive, wordsplit=self.word_split)
                 scores[m] = {s: scores[m][s] + sc[s] for s in self.stats}
 
             if self.return_lengths:

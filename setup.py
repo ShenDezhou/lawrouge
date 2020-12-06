@@ -4,7 +4,7 @@ LONGDOC = """
 lawrouge
 ===============
 
-"法摘"中文摘要评价：做最好的 Python 法律中文摘要评价组件
+"法摘"中文摘要评价：做最好的 Python 中文摘要评价组件
 
 "lawrouge" (Law-rouge) Chinese text summary evaluation metric: built to
 be the best Python Chinese text summary evaluation module.
@@ -35,10 +35,14 @@ GitHub: https://github.com/ShenDezhou/lawrouge
 -  手动安装：将 lawrouge 目录放置于当前目录或者 site-packages 目录
 -  通过 ``import lawrouge`` 来引用
 
+版本说明
+=======
+
+* 1.2.0: 修复英文摘要测评计算方法中的缺陷。
 """
 
 setup(name='lawrouge',
-      version='1.1.0',
+      version='1.2.0',
       description='Chinese Text Summary Evaluation Utilities',
       long_description=LONGDOC,
       author='Shen Dezhou',
@@ -62,6 +66,8 @@ setup(name='lawrouge',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Text Processing',
         'Topic :: Text Processing :: Indexing',
         'Topic :: Text Processing :: Linguistic',

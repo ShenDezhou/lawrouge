@@ -1,7 +1,5 @@
 import json
 import os
-import requests
-import re
 import lawrouge
 
 input_path = "lawrouge/test.json"

@@ -1,5 +1,5 @@
 # lawrouge
-“法摘”中文文本摘要测评：做最好的 Python 法律文本中文摘要测评组件
+“法摘”中文文本摘要测评：做最好的 Python 文本中英文摘要测评组件
 
 特点
 ====
@@ -7,7 +7,7 @@
 -  支持两种种摘要评价模式：
    -  中文模式，支持中文文本摘要评价（默认）；
    -  英文模式，支持英文文本摘要评价,
--  支持简体分词
+-  支持繁体文本
 -  THU 授权协议
 
 在线演示： 
@@ -35,7 +35,7 @@
 1. 中文摘要
 --------
 
-* `files_rouge.get_scores` 方法接受三个输入参数: 模型输出摘要文件列表、参考摘要文件列表、是否取平均
+* `files_rouge.get_scores` 方法接受三个输入参数: 模型输出摘要文件列表、参考（标准）摘要文件列表、是否取平均
 
 代码示例
 
@@ -63,7 +63,7 @@ weighted F1-score: 0.9999999949999998
 代码示例：
 
 ```python
-files_rouge = lawrouge.FoldersRouge(CHINESE=False)
+files_rouge = lawrouge.FoldersRouge(isChinese=False)
 scores = files_rouge.get_scores(pred_list, gold_list, avg=True)
 print(scores)
 weighted_f1 = 0.2*scores['rouge-1']['f'] + 0.4*scores['rouge-2']['f']+ 0.4*scores['rouge-l']['f']
@@ -76,3 +76,8 @@ print('weighted F1-score:', weighted_f1)
 {'rouge-1': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}, 'rouge-2': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}, 'rouge-l': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}}
 weighted F1-score: 0.9999999949999998
 ```
+
+版本说明
+=======
+
+* 1.2.0: 修复英文计算方法中的缺陷。

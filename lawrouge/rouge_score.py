@@ -102,18 +102,18 @@ def _get_ngrams(n, text, exclusive=True):
     return ngram_set
 
 
-def _split_into_words(sentences):
+def _split_into_words(sentences, wordsplit=''):
     """Splits multiple sentences into words and flattens the result"""
-    return list(itertools.chain(*[list(_) for _ in sentences]))
+    return list(itertools.chain(*[_.split(sep=wordsplit) for _ in sentences]))
 
 
-def _get_word_ngrams(n, sentences, exclusive=True):
+def _get_word_ngrams(n, sentences, exclusive=True, wordsplit=''):
     """Calculates word n-grams for multiple sentences.
     """
     assert len(sentences) > 0
     assert n > 0
 
-    words = _split_into_words(sentences)
+    words = _split_into_words(sentences, wordsplit)
     return _get_ngrams(n, words, exclusive=exclusive)
 
 
@@ -162,13 +162,18 @@ def _lcs(x, y):
     return table
 
 
-def find_one(chart, s1, s2):
+def find_one(chart, s1, s2, wordsplit):
     max_str = ''
+    if wordsplit:
+        max_str = []
     i = len(s1)
     j = len(s2)
     while i > 0 and j > 0:
         if s1[i - 1] == s2[j - 1]:  # 若最后一个字符相等，则一定来自于左上方
-            max_str += s1[i - 1]
+            if wordsplit:
+                max_str.append(s1[i - 1])
+            else:
+                max_str += s1[i - 1]
             i -= 1
             j -= 1
         else:
@@ -176,10 +181,13 @@ def find_one(chart, s1, s2):
                 i -= 1
             else:  # 否则来自上方
                 j -= 1
+    if wordsplit:
+        max_str.reverse()
+        return max_str
     return max_str[::-1]#逆序输出
 
 
-def _recon_lcs(s1, s2, exclusive=True):
+def _recon_lcs(s1, s2, exclusive=True, wordsplit=''):
     """
         Returns the Longest Subsequence between x and y.
         Source: https://blog.csdn.net/czywangye/article/details/88876022
@@ -198,7 +206,7 @@ def _recon_lcs(s1, s2, exclusive=True):
                 chart[i][j] = chart[i - 1][j - 1] + 1
             else:
                 chart[i][j] = max(chart[i - 1][j], chart[i][j - 1])  # 要是不相等，则取其右方或上方的最大值
-    max_s = find_one(chart, s1, s2)
+    max_s = find_one(chart, s1, s2, wordsplit)
     return Ngrams(list(max_s), exclusive=exclusive)
 
 
@@ -241,7 +249,7 @@ def multi_rouge_n(sequences, scores_ids, n=2, exclusive=True):
 
 
 def rouge_n(evaluated_sentences, reference_sentences,
-            n=2, raw_results=False, exclusive=True):
+            n=2, raw_results=False, exclusive=True, wordsplit=""):
     """
     Computes ROUGE-N of two text collections of sentences.
     Sourece: http://research.microsoft.com/en-us/um/people/cyl/download/papers/rouge-working-note-v1.3.1.pdf
@@ -264,9 +272,9 @@ def rouge_n(evaluated_sentences, reference_sentences,
         raise ValueError("Reference is empty.")
 
     evaluated_ngrams = _get_word_ngrams(
-        n, evaluated_sentences, exclusive=exclusive)
+        n, evaluated_sentences, exclusive=exclusive, wordsplit=wordsplit)
     reference_ngrams = _get_word_ngrams(
-        n, reference_sentences, exclusive=exclusive)
+        n, reference_sentences, exclusive=exclusive, wordsplit=wordsplit)
     reference_count = len(reference_ngrams)
     evaluated_count = len(evaluated_ngrams)
 
@@ -304,7 +312,7 @@ def f_r_p_rouge_n(evaluated_count, reference_count, overlapping_count):
 
 
 def _union_lcs(evaluated_sentences, reference_sentence,
-               prev_union=None, exclusive=False):
+               prev_union=None, exclusive=False, splitword=''):
     """
     Returns LCS_u(r_i, C) which is the LCS score of the union longest common
     subsequence between reference sentence ri and candidate summary C.
@@ -334,12 +342,12 @@ def _union_lcs(evaluated_sentences, reference_sentence,
 
     lcs_union = prev_union
     prev_count = len(prev_union)
-    reference_words = _split_into_words([reference_sentence])
+    reference_words = _split_into_words([reference_sentence], splitword)
 
     combined_lcs_length = 0
     for eval_s in evaluated_sentences:
-        evaluated_words = _split_into_words([eval_s])
-        lcs = _recon_lcs(reference_words, evaluated_words, exclusive=exclusive)
+        evaluated_words = _split_into_words([eval_s], splitword)
+        lcs = _recon_lcs(reference_words, evaluated_words, exclusive=exclusive, wordsplit=splitword)
         combined_lcs_length += len(lcs)
         lcs_union = lcs_union.union(lcs)
 
@@ -348,7 +356,7 @@ def _union_lcs(evaluated_sentences, reference_sentence,
 
 
 def rouge_l_summary_level(
-        evaluated_sentences, reference_sentences, raw_results=False, exclusive=False, **_):
+        evaluated_sentences, reference_sentences, raw_results=False, exclusive=False, wordsplit="",**_):
     """
     Computes ROUGE-L (summary level) of two text collections of sentences.
     http://research.microsoft.com/en-us/um/people/cyl/download/papers/rouge-working-note-v1.3.1.pdf
@@ -382,13 +390,13 @@ def rouge_l_summary_level(
     # total number of words in reference sentences
     m = len(
         Ngrams(
-            _split_into_words(reference_sentences),
+            _split_into_words(reference_sentences, wordsplit),
             exclusive=exclusive))
 
     # total number of words in evaluated sentences
     n = len(
         Ngrams(
-            _split_into_words(evaluated_sentences),
+            _split_into_words(evaluated_sentences, wordsplit),
             exclusive=exclusive))
 
     # print("m,n %d %d" % (m, n))
@@ -398,7 +406,8 @@ def rouge_l_summary_level(
         lcs_count, union = _union_lcs(evaluated_sentences,
                                       ref_s,
                                       prev_union=union,
-                                      exclusive=exclusive)
+                                      exclusive=exclusive,
+                                      splitword=wordsplit)
         union_lcs_sum_across_all_references += lcs_count
 
     llcs = union_lcs_sum_across_all_references
