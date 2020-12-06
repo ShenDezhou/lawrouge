@@ -57,12 +57,12 @@ weighted F1-score: 0.9999999949999998
 2. 英文摘要
 ----------------
 
-* 支持英文文本摘要测评, `lawrouge.FoldersRouge(CHINESE=False)` 方法接受语言参数: `CHINESE`是否为中文
+* 支持英文文本摘要测评, lawrouge.FoldersRouge(isChinese=False) 方法接受语言参数; isChinese是否为中文.
 
 
 代码示例：
 
-```python
+```
 files_rouge = lawrouge.FoldersRouge(isChinese=False)
 scores = files_rouge.get_scores(pred_list, gold_list, avg=True)
 print(scores)

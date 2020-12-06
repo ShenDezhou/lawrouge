@@ -2,19 +2,19 @@
 from distutils.core import setup
 LONGDOC = """
 lawrouge
-===============
+===========================
 
-"法摘"中文摘要评价：做最好的 Python 中文摘要评价组件
+"法摘"中英文摘要评价：做最好的 Python 中英文摘要评价组件
 
-"lawrouge" (Law-rouge) Chinese text summary evaluation metric: built to
-be the best Python Chinese text summary evaluation module.
+"lawrouge" (Law-rouge) Chinese and English text summary evaluation metric: built to
+be the best Python Multilingual Text Summary Evaluation module.
 
 完整文档见 ``README.md``
 
 GitHub: https://github.com/ShenDezhou/lawrouge
 
 特点
-====
+=========================
 
 -  支持中英文摘要测评模式
     
@@ -25,7 +25,7 @@ GitHub: https://github.com/ShenDezhou/lawrouge
 在线演示： ShenDezhou
 
 安装说明
-========
+======================
 
 代码对 Python 2/3 均兼容
 
@@ -35,10 +35,29 @@ GitHub: https://github.com/ShenDezhou/lawrouge
 -  手动安装：将 lawrouge 目录放置于当前目录或者 site-packages 目录
 -  通过 ``import lawrouge`` 来引用
 
+使用说明
+===============
+
+* 支持英文文本摘要测评, lawrouge.FoldersRouge(isChinese=False) 方法接受语言参数: isChinese是否为中文
+
+
+代码示例：
+
+```python
+files_rouge = lawrouge.FoldersRouge(isChinese=False)
+scores = files_rouge.get_scores(pred_list, gold_list, avg=True)
+print(scores)
+weighted_f1 = 0.2*scores['rouge-1']['f'] + 0.4*scores['rouge-2']['f']+ 0.4*scores['rouge-l']['f']
+print('weighted F1-score:', weighted_f1)
+```
+
+
 版本说明
-=======
+======================
 
 * 1.2.0: 修复英文摘要测评计算方法中的缺陷。
+
+
 """
 
 setup(name='lawrouge',
