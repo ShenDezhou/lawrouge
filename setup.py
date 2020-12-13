@@ -38,17 +38,15 @@ GitHub: https://github.com/ShenDezhou/lawrouge
 使用说明
 ===============
 
-* 支持英文文本摘要测评, lawrouge.FoldersRouge(isChinese=False) 方法接受语言参数: isChinese是否为中文
+* 支持英文文本摘要测评, lawrouge.Rouge(isChinese=False) 方法接受语言参数: isChinese是否为中文
 
 
 代码示例：
 
 ```python
-files_rouge = lawrouge.FoldersRouge(isChinese=False)
-scores = files_rouge.get_scores(pred_list, gold_list, avg=True)
+rouge = lawrouge.Rouge()
+scores = rouge.get_scores(["他是清华大学计算机科学与技术系"], ["计算机科学与技术专业"], avg=2)
 print(scores)
-weighted_f1 = 0.2*scores['rouge-1']['f'] + 0.4*scores['rouge-2']['f']+ 0.4*scores['rouge-l']['f']
-print('weighted F1-score:', weighted_f1)
 ```
 
 
@@ -56,12 +54,12 @@ print('weighted F1-score:', weighted_f1)
 ======================
 
 * 1.2.0: 修复英文摘要测评计算方法中的缺陷。
-
+* 1.3.0: 修复英文摘要测评使用方法中的缺陷。
 
 """
 
 setup(name='lawrouge',
-      version='1.2.0',
+      version='1.3.0',
       description='Chinese Text Summary Evaluation Utilities',
       long_description=LONGDOC,
       author='Shen Dezhou',

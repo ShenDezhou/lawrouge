@@ -1,19 +1,27 @@
-# lawrouge
-“法摘”中文文本摘要测评：做最好的 Python 文本中英文摘要测评组件
+lawrouge
+===========================
+
+"法摘"中英文摘要评价器：做最好的 Python 中英文摘要评价组件
+
+"lawrouge" (Law-rouge) Chinese and English text summary evaluation metric: built to
+be the best Python Multilingual Text Summary Evaluation module.
+
+完整文档见 ``README.md``
+
+GitHub: https://github.com/ShenDezhou/lawrouge
 
 特点
-====
+======================
 
 -  支持两种种摘要评价模式：
    -  中文模式，支持中文文本摘要评价（默认）；
-   -  英文模式，支持英文文本摘要评价,
+   -  英文模式（西、葡、法），支持英文以及西、葡、法等语言文本摘要评价;
 -  支持繁体文本
--  THU 授权协议
 
-在线演示： 
+在线演示： ShenDezhou
 
 安装说明
-========
+======================
 
 代码对 Python 2/3 均兼容
 
@@ -23,61 +31,108 @@
 -  手动安装：将 lawrouge 目录放置于当前目录或者 site-packages 目录
 -  通过 ``import lawrouge`` 来引用
 
+使用说明
+======================
 
-算法
-========
+* 支持英文文本摘要测评, 
+    -  lawrouge.Rouge(isChinese=False) 方法接受语言参数: 
+    -  isChinese: True中文, False为英文（西班牙、意大利等西方语系） 
 
-* Rouge-1、Rouge-2、Rouge-L作为摘要评价算法，以及三个评价的加权平均作为最终评价。
 
-主要功能
-=======
 
-1. 中文摘要
---------
 
-* `files_rouge.get_scores` 方法接受三个输入参数: 模型输出摘要文件列表、参考（标准）摘要文件列表、是否取平均
+中文摘要
+====================================
 
-代码示例
+* 比较两组字符串：
 
-```python
-files_rouge = lawrouge.FoldersRouge()
-scores = files_rouge.get_scores(pred_list, gold_list, avg=True)
+```
+rouge = lawrouge.Rouge()
+scores = rouge.get_scores(["他是清华大学计算机科学与技术系"], ["计算机科学与技术专业"], avg=2)
 print(scores)
-weighted_f1 = 0.2*scores['rouge-1']['f'] + 0.4*scores['rouge-2']['f']+ 0.4*scores['rouge-l']['f']
-print('weighted F1-score:', weighted_f1)
 ```
 
-输出:
+
+* 比较两组文件名（比较文件名给定文件内容）：
+
 
 ```
-{'rouge-1': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}, 'rouge-2': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}, 'rouge-l': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}}
+files_rouge = lawrouge.FoldersRouge()  
+scores = files_rouge.get_scores(pred_list, gold_list, avg=2)  
+print('weighted score: ', scores)
+```
+
+* 结果输出:
+
+
+```
 weighted F1-score: 0.9999999949999998
 ```
 
-2. 英文摘要
-----------------
 
-* 支持英文文本摘要测评, lawrouge.FoldersRouge(isChinese=False) 方法接受语言参数; isChinese是否为中文.
+English Summary
+=======================================
 
+Support English text summary evaluation, string version: lawrouge.Rouge(isChinese=False) and file name version: lawrouge.FoldersRouge(isChinese=False).
 
-代码示例：
+Compare two lists of strings：
 
 ```
-files_rouge = lawrouge.FoldersRouge(isChinese=False)
-scores = files_rouge.get_scores(pred_list, gold_list, avg=True)
+rouge = lawrouge.Rouge(isChinese=False)
+scores = rouge.get_scores(["He gets the Master Degree of Computer Science and Technology"], ["in the Department of Computer Science and Technology"], avg=2)
 print(scores)
-weighted_f1 = 0.2*scores['rouge-1']['f'] + 0.4*scores['rouge-2']['f']+ 0.4*scores['rouge-l']['f']
-print('weighted F1-score:', weighted_f1)
 ```
 
-输出:
+
+Compare two lists of files(pred_list, gold_list are file path of two corpus.)：
 
 ```
-{'rouge-1': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}, 'rouge-2': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}, 'rouge-l': {'f': 0.9999999949999997, 'p': 1.0, 'r': 1.0}}
+rouge = lawrouge.FoldersRouge(isChinese=False)
+scores = rouge.get_scores(pred_list, gold_list, avg=2) 
+print('weighted score: ', scores)
+```
+
+Result Output:
+
+```
+weighted F1-score: 0.9999999949999998
+```
+
+English Summary
+======================
+
+Support English text summary evaluation, string version: lawrouge.Rouge(isChinese=False) and file name version: lawrouge.FoldersRouge(isChinese=False).
+
+Compare two lists of strings：
+
+```
+rouge = lawrouge.Rouge(isChinese=False)
+scores = rouge.get_scores(["He gets the Master Degree of Computer Science and Technology"], ["in the Department of Computer Science and Technology"], avg=2)
+print(scores)
+```
+
+
+Compare two lists of files(pred_list, gold_list are file path of two corpus.)：
+
+```
+rouge = lawrouge.FoldersRouge(isChinese=False)
+scores = rouge.get_scores(pred_list, gold_list, avg=2) 
+print('weighted score: ', scores)
+```
+
+Result Output:
+
+```
 weighted F1-score: 0.9999999949999998
 ```
 
 版本说明
-=======
+======================================
 
-* 1.2.0: 修复英文计算方法中的缺陷。
+* 1.2.2: 修复英文摘要测评计算方法中的缺陷。
+
+* 1.3.0: 修复英文摘要测评使用方法中的缺陷。
+
+
+
+

@@ -74,13 +74,13 @@ class FilesRouge:
         ref_lc = line_count(ref_path)
         assert(hyp_lc == ref_lc)
 
-    def get_scores(self, hyp_path, ref_path, avg=False, ignore_empty=False):
+    def get_scores(self, hyp_path, ref_path, avg=0, ignore_empty=False):
         """Calculate ROUGE scores between each pair of
         lines (hyp_file[i], ref_file[i]).
         Args:
           * hyp_path: hypothesis file path
           * ref_path: references file path
-          * avg (False): whether to get an average scores or a list
+          * avg (0,1,2): whether to get an average scores or a list, or a weighted list
         """
         self._check_files(hyp_path, ref_path)
 
@@ -139,7 +139,7 @@ class Rouge:
             else:
                 self.stats = Rouge.DEFAULT_STATS
 
-    def get_scores(self, hyps, refs, avg=False, ignore_empty=False):
+    def get_scores(self, hyps, refs, avg=0, ignore_empty=False):
         if isinstance(hyps, six.string_types):
             hyps, refs = [hyps], [refs]
 
@@ -156,7 +156,9 @@ class Rouge:
 
         if not avg:
             return self._get_scores(hyps, refs)
-        return self._get_avg_scores(hyps, refs)
+        if avg == 1:
+            return self._get_avg_scores(hyps, refs)
+        return self._get_weighted_scores(hyps, refs)
 
     def _get_scores(self, hyps, refs):
         scores = []
@@ -222,3 +224,10 @@ class Rouge:
             }
 
         return avg_scores
+
+    def _get_weighted_scores(self, hyps, refs):
+        scores = self._get_avg_scores(hyps, refs)
+        f = 0.2*scores['rouge-1']['f'] + 0.4*scores['rouge-2']['f']+ 0.4*scores['rouge-l']['f']
+        p = 0.2*scores['rouge-1']['p'] + 0.4*scores['rouge-2']['p']+ 0.4*scores['rouge-l']['p']
+        r = 0.2 * scores['rouge-1']['r'] + 0.4 * scores['rouge-2']['r'] + 0.4 * scores['rouge-l']['r']
+        return {'f':f, 'p':p, 'r':r}
