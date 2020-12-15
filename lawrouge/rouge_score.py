@@ -104,7 +104,9 @@ def _get_ngrams(n, text, exclusive=True):
 
 def _split_into_words(sentences, wordsplit=''):
     """Splits multiple sentences into words and flattens the result"""
-    return list(itertools.chain(*[_.split(sep=wordsplit) for _ in sentences]))
+    if wordsplit:
+        return list(itertools.chain(*[_.split(sep=wordsplit) for _ in sentences]))
+    return list(itertools.chain(*[list(_) for _ in sentences]))
 
 
 def _get_word_ngrams(n, sentences, exclusive=True, wordsplit=''):

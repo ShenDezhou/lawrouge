@@ -54,12 +54,12 @@ print(scores)
 ======================
 
 * 1.2.0: 修复英文摘要测评计算方法中的缺陷。
-* 1.3.0: 修复英文摘要测评使用方法中的缺陷。
+* 1.3.1: 修复英文摘要测评使用方法中的缺陷。
 
 """
 
 setup(name='lawrouge',
-      version='1.3.0',
+      version='1.3.1',
       description='Chinese Text Summary Evaluation Utilities',
       long_description=LONGDOC,
       author='Shen Dezhou',
