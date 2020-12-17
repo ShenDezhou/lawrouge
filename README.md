@@ -71,34 +71,6 @@ weighted F1-score: 0.9999999949999998
 
 
 English Summary
-=======================================
-
-Support English text summary evaluation, string version: lawrouge.Rouge(isChinese=False) and file name version: lawrouge.FoldersRouge(isChinese=False).
-
-Compare two lists of strings：
-
-```
-rouge = lawrouge.Rouge(isChinese=False)
-scores = rouge.get_scores(["He gets the Master Degree of Computer Science and Technology"], ["in the Department of Computer Science and Technology"], avg=2)
-print(scores)
-```
-
-
-Compare two lists of files(pred_list, gold_list are file path of two corpus.)：
-
-```
-rouge = lawrouge.FoldersRouge(isChinese=False)
-scores = rouge.get_scores(pred_list, gold_list, avg=2) 
-print('weighted score: ', scores)
-```
-
-Result Output:
-
-```
-weighted F1-score: 0.9999999949999998
-```
-
-English Summary
 ======================
 
 Support English text summary evaluation, string version: lawrouge.Rouge(isChinese=False) and file name version: lawrouge.FoldersRouge(isChinese=False).
@@ -131,7 +103,7 @@ weighted F1-score: 0.9999999949999998
 
 * 1.2.2: 修复英文摘要测评计算方法中的缺陷。
 
-* 1.3.0: 修复英文摘要测评使用方法中的缺陷。
+* 1.3.1: 修复英文摘要测评使用方法中的缺陷。
 
 
 
