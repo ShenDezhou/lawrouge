@@ -200,6 +200,8 @@ class Rouge:
         for (hyp, ref) in zip(hyps, refs):
             hyp = hyp.split(sep=self.sentence_split)
             ref = ref.split(sep=self.sentence_split)
+            hyp = [h for h in hyp if len(h)]
+            ref = [r for r in ref if len(r)]
 
 
             for m in self.metrics:
