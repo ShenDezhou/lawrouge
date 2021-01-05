@@ -41,7 +41,8 @@ class TorchResource:
 
     def process_context(self, target, candidates):
         start = ft()
-        pairs = zip([target]* len(candidates), candidates)
+        candidates = [candidate for candidate in candidates if len(candidate.strip()) > 0]
+        pairs = zip([target] * len(candidates), candidates)
         scores = [self.rouge.get_scores([t],[c], avg=2) for t,c in pairs]
         f_scores = [score['f'] for score in scores]
         index, element = max(enumerate(f_scores), key=itemgetter(1))
